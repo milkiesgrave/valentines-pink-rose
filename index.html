@@ -32,11 +32,12 @@
   <div id="root"></div>
 
   <script type="text/babel">
-    const { useState } = React;
+    const { useState, useEffect } = React;
 
     function InteractiveImageButton() {
       const [isClicked, setIsClicked] = useState(false);
       const [isHovering, setIsHovering] = useState(false);
+      const [imagesLoaded, setImagesLoaded] = useState(false);
 
       const images = {
         default: "https://i.ibb.co/mCwvjbdq/Untitled67-20260213235655.png",
@@ -44,6 +45,23 @@
         clicked: "https://i.ibb.co/rR8zSBpm/Untitled67-20260214004459.png",
         clickedHover: "https://i.ibb.co/YTQ5DM0w/Untitled67-20260214004424.png"
       };
+
+      // Preload all images when component mounts
+      useEffect(() => {
+        const imageUrls = Object.values(images);
+        let loadedCount = 0;
+
+        imageUrls.forEach((url) => {
+          const img = new Image();
+          img.onload = () => {
+            loadedCount++;
+            if (loadedCount === imageUrls.length) {
+              setImagesLoaded(true);
+            }
+          };
+          img.src = url;
+        });
+      }, []);
 
       const handleClick = () => {
         setIsClicked(!isClicked);
