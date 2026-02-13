@@ -67,6 +67,14 @@
         setIsClicked(!isClicked);
       };
 
+      const handleMouseEnter = () => {
+        setIsHovering(true);
+      };
+
+      const handleMouseLeave = () => {
+        setIsHovering(false);
+      };
+
       const getCurrentImage = () => {
         if (!isClicked) {
           return isHovering ? images.defaultHover : images.default;
@@ -78,14 +86,16 @@
       return (
         <button
           onClick={handleClick}
-          onMouseEnter={() => setIsHovering(true)}
-          onMouseLeave={() => setIsHovering(false)}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
           className="cursor-pointer border-none bg-transparent p-0 transition-transform hover:scale-105 active:scale-95"
+          style={{ outline: 'none' }}
         >
           <img
             src={getCurrentImage()}
             alt="Interactive button"
-            className="w-80 h-80"
+            className="w-80 h-80 object-cover rounded-2xl shadow-lg"
+            style={{ pointerEvents: 'none', display: 'block' }}
           />
         </button>
       );
