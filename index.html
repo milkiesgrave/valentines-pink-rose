@@ -49,18 +49,24 @@
       // Preload all images when component mounts
       useEffect(() => {
         const imageUrls = Object.values(images);
-        let loadedCount = 0;
-
-        imageUrls.forEach((url) => {
-          const img = new Image();
-          img.onload = () => {
-            loadedCount++;
-            if (loadedCount === imageUrls.length) {
-              setImagesLoaded(true);
-            }
-          };
-          img.src = url;
+        
+        const preloadPromises = imageUrls.map((url) => {
+          return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve(url);
+            img.onerror = () => reject(url);
+            img.src = url;
+          });
         });
+
+        Promise.all(preloadPromises)
+          .then(() => {
+            setImagesLoaded(true);
+            console.log('All images preloaded successfully');
+          })
+          .catch((error) => {
+            console.error('Error preloading images:', error);
+          });
       }, []);
 
       const handleClick = () => {
